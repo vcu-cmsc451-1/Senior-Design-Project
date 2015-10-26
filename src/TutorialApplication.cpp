@@ -28,7 +28,12 @@ TutorialApplication::~TutorialApplication(void)
 //-------------------------------------------------------------------------------------
 void TutorialApplication::createScene(void)
 {
-    // create your scene here :)
+    mSceneMgr -> setAmbientLight (Ogre::ColourValue(0.5, 0.5, 0.5));
+    Ogre::Entity* oe = mSceneMgr -> createEntity("ogrehead.mesh");
+    Ogre::SceneNode* on = mSceneMgr -> getRootSceneNode() -> createChildSceneNode();
+    on -> attachObject(oe);
+    Ogre::Light* light = mSceneMgr -> createLight("MainLight");
+    light -> setPosition(20, 80, 50);
 }
 
 
