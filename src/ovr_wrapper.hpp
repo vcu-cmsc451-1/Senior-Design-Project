@@ -40,7 +40,7 @@ struct exception
 
     operator std::string() { return msg[err]; }
     exception (ovrResult e): err(e) {}
-}
+};
 
 struct ovr
 {
