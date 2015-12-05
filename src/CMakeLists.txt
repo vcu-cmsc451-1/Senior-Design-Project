@@ -97,6 +97,7 @@ endif()
 set(HDRS
 	./BaseApplication.h
 	./TutorialApplication.h
+        ./ovr_wrapper.hpp
 )
  
 set(SRCS

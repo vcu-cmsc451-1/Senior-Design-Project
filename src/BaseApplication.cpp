@@ -252,7 +252,10 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     //Need to capture/update each device
     mKeyboard->capture();
-    mMouse->capture();
+//    mMouse->capture();
+    
+    auto o = sensor.orientation();
+    mCamera->setOrientation ({o.w, o.x, o.y, o.z});
 
     mTrayMgr->frameRenderingQueued(evt);
 
