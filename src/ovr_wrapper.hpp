@@ -67,11 +67,15 @@ public:
     auto getTrackingState() { return ovrHmd_GetTrackingState (session, ovr_GetTimeInSeconds()); }
     auto orientation() { return getTrackingState().HeadPose.ThePose.Orientation; }
 
+    explicit operator bool() { return session; }
+
     sensor()
     {
 	session = ovrHmd_Create(0);
-	
-	desc = *session;
+
+        if (session)
+	    desc = *session;
+
 	//res = desc.Resolution;
     }
 
