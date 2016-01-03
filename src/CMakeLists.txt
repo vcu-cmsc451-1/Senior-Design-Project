@@ -111,20 +111,20 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_Overlay_INCLUDE_DIRS}
 )
  
-add_executable(OgreApp WIN32 ${HDRS} ${SRCS})
+add_executable(senior-design WIN32 ${HDRS} ${SRCS})
  
-set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
+set_target_properties(senior-design PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
+target_link_libraries(senior-design ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
  
 # post-build copy for win32
 if(WIN32 AND NOT MINGW)
-	add_custom_command( TARGET OgreApp PRE_BUILD
+	add_custom_command( TARGET senior-design PRE_BUILD
 		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
-	add_custom_command( TARGET OgreApp POST_BUILD
+	add_custom_command( TARGET senior-design POST_BUILD
 		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
 endif(WIN32 AND NOT MINGW)
 
@@ -134,7 +134,7 @@ endif(MINGW OR UNIX)
  
 if(WIN32)
  
-	install(TARGETS OgreApp
+	install(TARGETS senior-design
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
@@ -190,7 +190,7 @@ endif(WIN32)
 
 if(UNIX)
  
-	install(TARGETS OgreApp
+	install(TARGETS senior-design
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
