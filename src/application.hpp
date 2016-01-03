@@ -1,6 +1,23 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
+#include <OgreCamera.h>
+#include <OgreEntity.h>
+#include <OgreLogManager.h>
+#include <OgreRoot.h>
+#include <OgreViewport.h>
+#include <OgreSceneManager.h>
+#include <OgreRenderWindow.h>
+#include <OgreConfigFile.h>
+
+#include <OISEvents.h>
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+
+#include <SdkTrays.h>
+#include <SdkCameraMan.h>
+
 class application:
     Ogre::FrameListener,
     Ogre::WindowEventListener,
@@ -13,36 +30,37 @@ public:
     ~application();
     void go();
 
-private:
+protected:
+    virtual void create_scene();
+    virtual void destroy_scene();
+
     bool setup();
     bool configure();
-    bool choose_scene_mgr();
-    bool create_camera();
-    bool create_frame_listener();
-    bool create_scene();
-    bool destroy_scene();
-    bool create_viewports();
-    bool setup_resources();
-    bool create_resource_listener();
-    bool load_resources();
+    void choose_scene_mgr();
+    void create_camera();
+    void create_frame_listener();
+    void create_viewports();
+    void setup_resources();
+    void create_resource_listener();
+    void load_resources();
 
-    Ogre::Root root;
-    Ogre::Camera cam;
-    Ogre::SceneManager scene_mgr;
-    Ogre::RenderWindow wnd;
+    Ogre::Root* root;
+    Ogre::Camera* cam;
+    Ogre::SceneManager* scene_mgr;
+    Ogre::RenderWindow* wnd;
     Ogre::String resource_cfg;
     Ogre::String plugin_cfg;
-    Ogre::OverlaySystem overlay;
+    Ogre::OverlaySystem* overlay;
 
-    OgreBites::SdkTrayManager tray_mgr;
-    OgreBites::SdkCameraMan cameraman;
-    OgreBites::ParamsPanel details;
-    virtual bool cursor_visible;
-    virtual bool shutdown;
+    OgreBites::SdkTrayManager* tray_mgr;
+    OgreBites::SdkCameraMan* cameraman;
+    OgreBites::ParamsPanel* details;
+    bool cursor_visible;
+    bool shutdown;
 
-    OIS::InputManager input;
-    OIS::Mouse mouse;
-    OIS::Keyboard kbd;
+    OIS::InputManager* input;
+    OIS::Mouse* mouse;
+    OIS::Keyboard* kbd;
 
     virtual bool frameRenderingQueued (Ogre::FrameEvent const&);
 
@@ -50,8 +68,8 @@ private:
     virtual bool keyReleased (OIS::KeyEvent const&);
 
     virtual bool mouseMoved    (OIS::MouseEvent const&);
-    virtual bool mousePressed  (OIS::MouseEvent const&);
-    virtual bool mouseReleased (OIS::MouseEvent const&);
+    virtual bool mousePressed  (OIS::MouseEvent const&, OIS::MouseButtonID);
+    virtual bool mouseReleased (OIS::MouseEvent const&, OIS::MouseButtonID);
 
     virtual void windowResized (Ogre::RenderWindow*);
     virtual void windowClosed  (Ogre::RenderWindow*);
@@ -59,7 +77,7 @@ private:
 
 application::application():
     resource_cfg {Ogre::StringUtil::BLANK},
-    plugins_cfg  {Ogre::StringUtil::BLANK},
+    plugin_cfg  {Ogre::StringUtil::BLANK},
     cursor_visible {false},
     shutdown       {false},
     root      {0},
@@ -88,7 +106,7 @@ bool application::configure()
 {
     if ( root->showConfigDialog() )
     {
-        wnd = root->initialize (true, "Render Window");
+        wnd = root->initialise (true, "Render Window");
         return true;
     }
 
@@ -136,8 +154,8 @@ void application::create_frame_listener()
     Ogre::WindowEventUtilities::addWindowEventListener (wnd, this);
 
     OgreBites::InputContext inctx;
-    inctx.mouse = mouse;
-    inctx.kbd   = kbd;
+    inctx.mMouse    = mouse;
+    inctx.mKeyboard = kbd;
     tray_mgr = new OgreBites::SdkTrayManager ("InterfaceName", wnd, inctx, this);
     tray_mgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     tray_mgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
@@ -159,9 +177,10 @@ void application::create_frame_listener()
     root->addFrameListener(this);
 }
 
-application::destroy_scene() { }
+void application::create_scene() { }
+void application::destroy_scene() { }
 
-application::create_viewports()
+void application::create_viewports()
 {
     Ogre::Viewport* vp = wnd->addViewport(cam);
     vp->setBackgroundColour (Ogre::ColourValue {0, 0, 0});
@@ -169,10 +188,10 @@ application::create_viewports()
     cam->setAspectRatio (Ogre::Real (vp->getActualWidth()) / Ogre::Real (vp->getActualHeight()));
 }
 
-application::setup_resources()
+void application::setup_resources()
 {
     Ogre::ConfigFile conf;
-    conf.load(resources_cfg);
+    conf.load(resource_cfg);
 
     auto it = conf.getSectionIterator();
 
@@ -182,21 +201,21 @@ application::setup_resources()
         auto settings = it.getNext();
         for (auto i: *settings)
             Ogre::ResourceGroupManager::getSingleton()
-                .addResourceLocation (i->second, i->first, sect);
+                .addResourceLocation (i.second, i.first, sect);
     }
 }
 
-application::create_resource_listener() { }
+void application::create_resource_listener() { }
 
-application::load_resources()
+void application::load_resources()
 {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
-application::go()
+void application::go()
 {
     resource_cfg = "resources.cfg";
-    plugins_cfg  = "plugins.cfg";
+    plugin_cfg  = "plugins.cfg";
 
     if (!setup()) return;
 
@@ -204,9 +223,9 @@ application::go()
     destroy_scene();
 }
 
-application::setup()
+bool application::setup()
 {
-    root = new Ogre::Root(plugins_cfg);
+    root = new Ogre::Root(plugin_cfg);
 
     setup_resources();
 
@@ -227,7 +246,7 @@ application::setup()
     return true;
 }
 
-application::frameRenderingQueued (Ogre::FrameEvent const& e)
+bool application::frameRenderingQueued (Ogre::FrameEvent const& e)
 {
     if (wnd->isClosed()) return false;
     if (shutdown)        return false;
@@ -241,6 +260,110 @@ application::frameRenderingQueued (Ogre::FrameEvent const& e)
         cameraman->frameRenderingQueued(e);
 
     return true;
+}
+
+bool application::keyPressed (OIS::KeyEvent const& arg)
+{
+    if (tray_mgr->isDialogVisible()) return true;
+
+    if (arg.key == OIS::KC_F)
+    {
+        tray_mgr->toggleAdvancedFrameStats();
+    }
+    else if (arg.key == OIS::KC_R)
+    {
+        Ogre::PolygonMode pm;
+
+        switch (cam->getPolygonMode())
+        {
+        case Ogre::PM_SOLID:
+            pm = Ogre::PM_WIREFRAME;
+            break;
+
+        case Ogre::PM_WIREFRAME:
+            pm = Ogre::PM_POINTS;
+            break;
+
+        default:
+            pm = Ogre::PM_SOLID;
+            break;
+        }
+
+        cam->setPolygonMode(pm);
+    }
+    else if (arg.key == OIS::KC_F5)
+    {
+        Ogre::TextureManager::getSingleton().reloadAll();
+    }
+    else if (arg.key == OIS::KC_SYSRQ)
+    {
+        wnd->writeContentsToTimestampedFile ("screenshot", ".png");
+    }
+    else if (arg.key == OIS::KC_ESCAPE)
+    {
+        shutdown = true;
+    }
+
+    cameraman->injectKeyDown(arg);
+    return true;
+}
+
+bool application::keyReleased (OIS::KeyEvent const& arg)
+{
+    cameraman->injectKeyUp(arg);
+    return true;
+}
+
+bool application::mouseMoved (OIS::MouseEvent const& arg)
+{
+    if (tray_mgr->injectMouseMove(arg))
+        return true;
+
+    cameraman->injectMouseMove(arg);
+    return true;
+}
+
+bool application::mousePressed (OIS::MouseEvent const& arg, OIS::MouseButtonID id)
+{
+    if (tray_mgr->injectMouseDown (arg, id))
+        return true;
+
+    cameraman->injectMouseDown (arg, id);
+    return true;
+}
+
+bool application::mouseReleased (OIS::MouseEvent const& arg, OIS::MouseButtonID id)
+{
+    if (tray_mgr->injectMouseUp (arg, id))
+        return true;
+
+    cameraman->injectMouseUp (arg, id);
+    return true;
+}
+
+void application::windowResized (Ogre::RenderWindow* wnd)
+{
+    unsigned width, height, depth;
+    int left, top;
+
+    wnd->getMetrics (width, height, depth, left, top);
+
+    OIS::MouseState const& ms = mouse->getMouseState();
+    ms.width = width;
+    ms.height = height;
+}
+
+void application::windowClosed (Ogre::RenderWindow* wnd)
+{
+    if (wnd == this->wnd)
+        if (input)
+        {
+            input->destroyInputObject(mouse);
+            input->destroyInputObject(kbd);
+
+            OIS::InputManager::destroyInputSystem(input);
+            input = 0;
+        }
 }
 
 #endif // _APPLICATION_H_
