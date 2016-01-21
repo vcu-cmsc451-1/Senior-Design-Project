@@ -18,6 +18,8 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+#include "ovr_wrapper.hpp"
+
 class application:
     Ogre::FrameListener,
     Ogre::WindowEventListener,
@@ -61,6 +63,8 @@ protected:
     OIS::InputManager* input;
     OIS::Mouse* mouse;
     OIS::Keyboard* kbd;
+
+    ovr::sensor sensor;
 
     virtual bool frameRenderingQueued (Ogre::FrameEvent const&);
 
