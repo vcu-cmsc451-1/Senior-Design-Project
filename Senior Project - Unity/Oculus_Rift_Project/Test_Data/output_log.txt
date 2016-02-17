@@ -1,0 +1,25 @@
+Initialize engine version: 5.3.2f1 (e87ab445ead0)
+[VRDevice] Successfully created device oculus.
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) HD Graphics 5500 (ID=0x1616)
+    Vendor:   Intel
+    VRAM:     2111 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.075 seconds
+Platform assembly: C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Megan\Documents\Oculus_Rift_Project\Test_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.975333 ms
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 1d38 -> priority: 1 
